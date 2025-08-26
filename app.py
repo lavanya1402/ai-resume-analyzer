@@ -1,80 +1,141 @@
-import os, io, re, unicodedata
+import os, io, re, unicodedata, shutil, importlib.util
 from pathlib import Path
+from typing import Tuple, List
 
 import numpy as np
 import streamlit as st
 from PIL import Image
 import pdfplumber
-from pdf2image import convert_from_bytes
-import pytesseract
 from sklearn.metrics.pairwise import cosine_similarity
 from openai import OpenAI
-
 from dotenv import load_dotenv
-# Load the .env that sits next to this file, even if CWD changes
-load_dotenv(dotenv_path=Path(__file__).with_name('.env'), override=True)
 
-# ---- Settings (.env optional) ----
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")  # required for OpenAI
+# -------- Optional OCR imports (guarded so the app still runs without them) ----
+try:
+    from pdf2image import convert_from_bytes
+except Exception:
+    convert_from_bytes = None  # type: ignore
+
+try:
+    import pytesseract as _pt
+    pytesseract = _pt  # type: ignore
+except Exception:
+    pytesseract = None  # type: ignore
+# -----------------------------------------------------------------------------
+
+
+# =============================================================================
+# Environment / Config
+# =============================================================================
+# Load a local .env when present (for local dev). In Azure, use App Settings.
+load_dotenv(dotenv_path=Path(__file__).with_name(".env"), override=True)
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 EMBED_MODEL    = os.getenv("OPENAI_MODEL_EMBED", "text-embedding-3-large")
 GPT_MODEL      = os.getenv("OPENAI_MODEL_GPT", "gpt-4o-mini")
-TESSERACT_CMD  = os.getenv("TESSERACT_CMD")   # e.g. C:\Program Files\Tesseract-OCR\tesseract.exe
-POPPLER_PATH   = os.getenv("POPPLER_PATH")    # e.g. C:\...\poppler-xx\Library\bin
+TESSERACT_CMD  = os.getenv("TESSERACT_CMD")   # e.g. "C:/Program Files/Tesseract-OCR/tesseract.exe"
+POPPLER_PATH   = os.getenv("POPPLER_PATH")    # e.g. "C:/.../poppler-xx/Library/bin"
 
-if TESSERACT_CMD:
-    pytesseract.pytesseract.tesseract_cmd = TESSERACT_CMD
+if pytesseract and TESSERACT_CMD:
+    pytesseract.pytesseract.tesseract_cmd = TESSERACT_CMD  # type: ignore
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
-# ---- Helpers ----
+
+# =============================================================================
+# OCR Capability Check
+# =============================================================================
+def ocr_runtime_available() -> Tuple[bool, str]:
+    """Check whether Python packages AND system binaries for OCR exist."""
+    has_pdf2image = convert_from_bytes is not None
+    has_pytesseract = pytesseract is not None
+    has_poppler = (shutil.which("pdftoppm") is not None) or bool(POPPLER_PATH)
+    has_tesseract = (shutil.which("tesseract") is not None) or bool(TESSERACT_CMD)
+
+    if not has_pdf2image or not has_pytesseract:
+        return (False, "Missing Python OCR packages (pdf2image/pytesseract).")
+    if not has_poppler:
+        return (False, "Poppler binary not found (pdftoppm).")
+    if not has_tesseract:
+        return (False, "Tesseract binary not found.")
+    return (True, "OCR runtime available.")
+
+
+# =============================================================================
+# Helpers
+# =============================================================================
 def _clean(text: str) -> str:
     text = unicodedata.normalize("NFKC", text or "")
     text = text.replace("\x00", " ")
     text = re.sub(r"[ \t]+", " ", text)
     return text.strip()
 
+
 def parse_pdf(pdf_bytes: bytes) -> str:
-    text_parts = []
+    text_parts: List[str] = []
     with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
         for p in pdf.pages:
             t = (p.extract_text() or "").strip()
             if not t:
-                # OCR this page if blank text layer — use Poppler path if provided
-                try:
-                    images = convert_from_bytes(
-                        pdf_bytes,
-                        first_page=p.page_number,
-                        last_page=p.page_number,
-                        poppler_path=POPPLER_PATH  # <— key addition
-                    )
-                    if images:
-                        t = pytesseract.image_to_string(images[0])
-                except Exception:
-                    # Poppler not found or conversion failed; leave t as ""
-                    pass
+                # blank text layer → try OCR if runtime available
+                ok, why = ocr_runtime_available()
+                if ok and convert_from_bytes and pytesseract:
+                    try:
+                        images = convert_from_bytes(
+                            pdf_bytes,
+                            first_page=p.page_number,
+                            last_page=p.page_number,
+                            poppler_path=POPPLER_PATH or None
+                        )
+                        if images:
+                            t = pytesseract.image_to_string(images[0])  # type: ignore
+                    except Exception:
+                        # Fail-safe: skip OCR errors quietly
+                        pass
+                else:
+                    st.info(f"OCR skipped on page {p.page_number}: {why}")
             text_parts.append(t)
     return _clean("\n".join(text_parts))
 
+
 def parse_image(img_bytes: bytes) -> str:
     img = Image.open(io.BytesIO(img_bytes))
-    return _clean(pytesseract.image_to_string(img))
+    if pytesseract and ocr_runtime_available()[0]:
+        try:
+            return _clean(pytesseract.image_to_string(img))  # type: ignore
+        except Exception:
+            return ""
+    return ""
+
 
 def parse_any(file_bytes: bytes, filename: str) -> str:
     name = filename.lower()
     if name.endswith(".pdf"):
         return parse_pdf(file_bytes)
-    if any(name.endswith(e) for e in [".png", ".jpg", ".jpeg", ".webp", ".tiff"]):
-        return parse_image(file_bytes)
+    if any(name.endswith(e) for e in (".png", ".jpg", ".jpeg", ".webp", ".tiff")):
+        text = parse_image(file_bytes)
+        if not text:
+            st.info("OCR skipped for image: OCR runtime not available on this server.")
+        return text
+    # fallback: treat as text
     return _clean(file_bytes.decode("utf-8", errors="ignore"))
+
 
 def embed(text: str):
     resp = client.embeddings.create(model=EMBED_MODEL, input=[text])
     return resp.data[0].embedding
 
-def cos_sim(a, b) -> float:
-    return float(cosine_similarity(np.array(a).reshape(1, -1), np.array(b).reshape(1, -1))[0][0])
 
-def simple_skills(text: str):
+def cos_sim(a, b) -> float:
+    return float(
+        cosine_similarity(
+            np.array(a).reshape(1, -1),
+            np.array(b).reshape(1, -1)
+        )[0][0]
+    )
+
+
+def simple_skills(text: str) -> List[str]:
     keys = [
         "python","sql","machine learning","deep learning","nlp","azure","aws","gcp",
         "docker","kubernetes","linux","git","pandas","numpy","scikit-learn",
@@ -84,7 +145,8 @@ def simple_skills(text: str):
     t = text.lower()
     return sorted({k for k in keys if k in t})
 
-def suggest(resume: str, jd: str, score: float, skills: list[str]) -> str:
+
+def suggest(resume: str, jd: str, score: float, skills: List[str]) -> str:
     system = "You are a precise, practical resume coach. Be concise, use bullet points, give concrete examples."
     user = f"""Analyze how well this resume aligns with the JD.
 
@@ -109,13 +171,19 @@ Tasks:
 4) 5-item action plan (courses/projects/metrics) for the next 2 weeks."""
     resp = client.chat.completions.create(
         model=GPT_MODEL,
-        messages=[{"role":"system","content":system},{"role":"user","content":user}],
+        messages=[
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ],
         temperature=0.3,
-        max_tokens=800
+        max_tokens=800,
     )
     return resp.choices[0].message.content.strip()
 
-# ---- UI ----
+
+# =============================================================================
+# UI
+# =============================================================================
 st.set_page_config(page_title="AI Resume Analyzer", page_icon="🧠", layout="wide")
 st.title("🧠 AI Resume Analyzer (Streamlit)")
 st.caption("Upload a Resume + JD • Embeddings + Cosine Similarity • GPT Suggestions")
@@ -125,10 +193,16 @@ with st.sidebar:
     st.write("Embedding:", EMBED_MODEL)
     st.write("GPT:", GPT_MODEL)
     st.markdown("---")
-    st.markdown("Troubleshooting: set **POPPLER_PATH** in .env for image-only PDFs; set **TESSERACT_CMD** for OCR.")
+    ok_ocr, why_ocr = ocr_runtime_available()
+    if not ok_ocr:
+        st.warning("OCR features limited: " + why_ocr)
+    st.markdown(
+        "Troubleshooting: set **POPPLER_PATH** in App Settings (or `.env`) for image-only PDFs; "
+        "set **TESSERACT_CMD** for OCR."
+    )
 
 if not OPENAI_API_KEY:
-    st.error("Missing OPENAI_API_KEY in .env")
+    st.error("Missing OPENAI_API_KEY (configure in Azure App Settings).")
     st.stop()
 
 c1, c2 = st.columns(2)
@@ -149,6 +223,7 @@ if use_demo:
     jd_txt = """We seek a Generative AI Developer with Python, LangChain, LLMs,
 RAG (FAISS/Chroma), Azure deployment, and MLOps basics.
 Streamlit or FastAPI preferred. SQL and Docker required."""
+
 if f_res is not None:
     resume_txt = parse_any(f_res.read(), f_res.name)
 if f_jd is not None:
@@ -185,9 +260,11 @@ Missing: {', '.join(missing) if missing else 'None'}
 Suggestions:
 {tips}
 """
-    st.download_button("📄 Download report.txt",
-                       data=report.encode("utf-8"),
-                       file_name="resume_report.txt",
-                       mime="text/plain")
+    st.download_button(
+        "📄 Download report.txt",
+        data=report.encode("utf-8"),
+        file_name="resume_report.txt",
+        mime="text/plain",
+    )
 else:
     st.info("Upload both files or click **Run Demo (Sample Texts)**.")
