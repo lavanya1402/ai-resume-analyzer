@@ -1,4 +1,4 @@
-# AI Resume Analyzer — Intelligent Resume vs JD Matching (Streamlit + GPT)
+# AI Resume Analyzer — Intelligent Resume vs JD Matching
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue)
 ![Streamlit](https://img.shields.io/badge/UI-Streamlit-red)
@@ -6,42 +6,40 @@
 ![Embeddings](https://img.shields.io/badge/Embeddings-OpenAI-purple)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
-An **AI-powered resume analysis system** that compares a resume with a job description and generates:
+An AI-powered system that compares resumes with job descriptions and generates:
 
-- 🎯 semantic match score  
-- ❌ missing skills report  
-- ✍ revised resume bullets  
-- 🚀 actionable improvement plan  
+- 🎯 Semantic match score  
+- ❌ Missing skills report  
+- ✍ Rewritten resume bullets  
+- 🚀 Actionable improvement plan  
 
-> Structured AI reasoning. Human decision remains in control.
+> AI-assisted career coaching with explainable reasoning.
 
 ---
 
-## Architecture (Mermaid)
-
-You can copy this Mermaid block anywhere:
+## Architecture
 
 ```mermaid
 graph TB
 
-subgraph Experience["🧑‍💼 Experience Layer (User Interface)"]
-UI["Resume Analyzer App<br/>Upload Resume + JD<br/>Run Analysis<br/>View Score + Suggestions"]
+subgraph Experience["User Interface"]
+UI["Streamlit Resume Analyzer<br/>Upload Resume + JD<br/>Run Analysis"]
 end
 
-subgraph Understanding["🧾 Understanding Layer"]
+subgraph Understanding["Parsing Layer"]
 Parser1["Resume Parser"]
 Parser2["JD Parser"]
 Cleaner["Text Normalization"]
 end
 
-subgraph Intelligence["🧠 Intelligence Layer"]
+subgraph Intelligence["AI Reasoning Layer"]
 Embed["Embedding Engine"]
 Similarity["Cosine Similarity"]
 Gap["Gap Analyzer"]
 Suggest["Suggestion Generator"]
 end
 
-subgraph Output["📊 Output Layer"]
+subgraph Output["Results"]
 Score["Match Score"]
 Missing["Missing Skills"]
 Bullets["Rewritten Bullets"]
@@ -66,43 +64,45 @@ Suggest --> Plan
 
 ## Screenshots
 
+> Make sure filenames inside `/assets` have **no spaces**
+
 <p align="center">
-  <img src="assets/First_Screenshot.png" width="32%">
-  <img src="assets/Second_Screenshot.png" width="32%">
-  <img src="assets/Third_Screenshot.png" width="32%">
+  <img src="./assets/First_Screenshot.png" width="30%">
+  <img src="./assets/Second_Screenshot.png" width="30%">
+  <img src="./assets/Third_Screenshot.png" width="30%">
 </p>
 
+---
 
+## Features
 
-## What It Does
-
-### ✅ Resume vs JD Parsing
+### Resume vs JD Parsing
 - Upload resume
 - Upload job description
 - Extract structured text
-- Normalize skills & content
+- Normalize skills
 
-### ✅ Semantic Matching
-- Convert text → embeddings
+### Semantic Matching
+- Text → embeddings
 - Cosine similarity scoring
-- Detect missing skills
+- Missing skill detection
 
-### ✅ GPT Reasoning
+### GPT Reasoning
 - Gap analysis
 - Resume improvement suggestions
 - Rewritten bullet points
-- Career action plan
+- Career action roadmap
 
 ---
 
 ## Tech Stack
 
 - Python
-- Streamlit UI
+- Streamlit
 - OpenAI Embeddings
-- GPT-4o Reasoning
-- Cosine Similarity
+- GPT-4o
 - Pandas
+- Cosine Similarity
 - Prompt Engineering
 
 ---
@@ -110,7 +110,7 @@ Suggest --> Plan
 ## Quick Start
 
 ```bash
-git clone https://github.com/YOUR_REPO/ai-resume-analyzer.git
+git clone https://github.com/lavanya1402/ai-resume-analyzer.git
 cd ai-resume-analyzer
 
 python -m venv venv
@@ -127,7 +127,7 @@ streamlit run app.py
 Create `.env` file:
 
 ```
-OPENAI_API_KEY=your_key_here
+OPENAI_API_KEY=your_api_key_here
 ```
 
 ---
@@ -155,11 +155,11 @@ AI-Resume-Analyzer/
 
 ## This project demonstrates
 
-✅ AI resume intelligence  
-✅ semantic similarity matching  
-✅ GPT reasoning workflows  
-✅ explainable decision output  
-✅ career guidance automation  
+- AI resume intelligence  
+- Semantic similarity matching  
+- GPT reasoning workflows  
+- Explainable decision output  
+- Career guidance automation  
 
 This is not just scoring.  
 This is **AI-assisted career coaching**.
