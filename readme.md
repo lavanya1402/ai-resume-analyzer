@@ -1,3 +1,32 @@
+```
+assets/
+architecture.mmd
+First_Screenshot.png
+Second_Screenshot.png
+Third_Screenshot.png
+```
+
+But your README is calling:
+
+```
+assets/screenshot1.png
+assets/screenshot2.png
+...
+```
+
+Linux/GitHub is **case-sensitive**.
+
+👉 `First_Screenshot.png` ≠ `screenshot1.png`
+
+That’s why images are blank.
+
+---
+
+## ✅ Fixed README (matching YOUR real filenames)
+
+Copy paste this entire block into README:
+
+````md
 # AI Resume Analyzer — Intelligent Resume vs JD Matching (Streamlit + GPT)
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue)
@@ -24,19 +53,16 @@ You can copy this Mermaid block anywhere:
 ```mermaid
 graph TB
 
-%% EXPERIENCE
 subgraph Experience["🧑‍💼 Experience Layer (User Interface)"]
 UI["Resume Analyzer App<br/>Upload Resume + JD<br/>Run Analysis<br/>View Score + Suggestions"]
 end
 
-%% UNDERSTANDING
 subgraph Understanding["🧾 Understanding Layer"]
 Parser1["Resume Parser"]
 Parser2["JD Parser"]
 Cleaner["Text Normalization"]
 end
 
-%% INTELLIGENCE
 subgraph Intelligence["🧠 Intelligence Layer"]
 Embed["Embedding Engine"]
 Similarity["Cosine Similarity"]
@@ -44,7 +70,6 @@ Gap["Gap Analyzer"]
 Suggest["Suggestion Generator"]
 end
 
-%% OUTPUT
 subgraph Output["📊 Output Layer"]
 Score["Match Score"]
 Missing["Missing Skills"]
@@ -72,31 +97,25 @@ Suggest --> Plan
 
 | | |
 |-|-|
-| ![](assets/screenshot1.png) | ![](assets/screenshot2.png) |
-| ![](assets/screenshot3.png) | ![](assets/screenshot4.png) |
-| ![](assets/screenshot5.png) | ![](assets/screenshot6.png) |
-
-> Replace images inside `/assets/`
+| ![](assets/First_Screenshot.png) | ![](assets/Second_Screenshot.png) |
+| ![](assets/Third_Screenshot.png) | |
 
 ---
 
 ## What It Does
 
-### ✅ 1) Resume vs JD Parsing
-
+### ✅ Resume vs JD Parsing
 - Upload resume
 - Upload job description
 - Extract structured text
 - Normalize skills & content
 
-### ✅ 2) Semantic Matching
-
+### ✅ Semantic Matching
 - Convert text → embeddings
 - Cosine similarity scoring
 - Detect missing skills
 
-### ✅ 3) GPT Reasoning
-
+### ✅ GPT Reasoning
 - Gap analysis
 - Resume improvement suggestions
 - Rewritten bullet points
@@ -146,8 +165,9 @@ OPENAI_API_KEY=your_key_here
 ```
 AI-Resume-Analyzer/
 ├── assets/
-│   ├── screenshot1.png
-│   ├── screenshot2.png
+│   ├── First_Screenshot.png
+│   ├── Second_Screenshot.png
+│   ├── Third_Screenshot.png
 │   └── architecture.mmd
 ├── src/
 │   ├── resume_scorer.py
@@ -167,7 +187,7 @@ AI-Resume-Analyzer/
 ✅ semantic similarity matching  
 ✅ GPT reasoning workflows  
 ✅ explainable decision output  
-✅ career guidance automation
+✅ career guidance automation  
 
 This is not just scoring.  
 This is **AI-assisted career coaching**.
@@ -177,3 +197,11 @@ This is **AI-assisted career coaching**.
 ## License
 
 MIT
+````
+
+---
+
+
+Just say what you want next 😄
+
+Best regards,
