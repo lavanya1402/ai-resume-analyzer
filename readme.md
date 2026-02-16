@@ -64,11 +64,10 @@ Suggest --> Plan
 
 ## Screenshots
 
-
 <p align="center">
-  <img src="./assets/First_Screenshot.png" width="30%">
-  <img src="./assets/Second_Screenshot.png" width="30%">
-  <img src="./assets/Third_Screenshot.png" width="30%">
+  <img src="assets/First_Screenshot.png" width="30%">
+  <img src="assets/Second_Screenshot.png" width="30%">
+  <img src="assets/Third_Screenshot.png" width="30%">
 </p>
 
 ---
