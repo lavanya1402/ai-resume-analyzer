@@ -67,17 +67,16 @@ Suggest --> Plan
 ## Screenshots
 
 <p align="center">
-  <img src="assets/First_Screenshot.png" width="800"/>
+  <img src="assets/First_Screenshot.png" width="900"/>
 </p>
 
 <p align="center">
-  <img src="assets/Second_Screenshot.png" width="800"/>
+  <img src="assets/Second_Screenshot.png" width="900"/>
 </p>
 
 <p align="center">
-  <img src="assets/Third_Screenshot.png" width="800"/>
+  <img src="assets/Third_Screenshot.png" width="900"/>
 </p>
-
 
 ## What It Does
 
