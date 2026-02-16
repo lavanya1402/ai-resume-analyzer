@@ -68,8 +68,12 @@ Suggest --> Plan
 
 | | |
 |-|-|
-| ![](assets/First_Screenshot.png) | ![](assets/Second_Screenshot.png) |
-| ![](assets/Third_Screenshot.png) | |
+| ![](assets/First_Screenshot.png)  |
+
+| ![](assets/Second_Screenshot.png) |
+
+| ![](assets/Third_Screenshot.png) |
+
 
 
 
