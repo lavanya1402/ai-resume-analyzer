@@ -66,12 +66,18 @@ Suggest --> Plan
 
 ## Screenshots
 
-| | |
-|-|-|
-| ![](assets/First_Screenshot.png) | ![](assets/Second_Screenshot.png) |
-| ![](assets/Third_Screenshot.png) | |
+<p align="center">
+  <img src="assets/First_Screenshot.png" width="800"/>
+</p>
 
----
+<p align="center">
+  <img src="assets/Second_Screenshot.png" width="800"/>
+</p>
+
+<p align="center">
+  <img src="assets/Third_Screenshot.png" width="800"/>
+</p>
+
 
 ## What It Does
 
