@@ -1,96 +1,73 @@
-# ✅ README section with Mermaid + visible architecture
+# AI Resume Analyzer — Intelligent Resume vs JD Matching (Streamlit + GPT)
 
-Paste this in your README:
+![Python](https://img.shields.io/badge/Python-3.10+-blue)
+![Streamlit](https://img.shields.io/badge/UI-Streamlit-red)
+![LLM](https://img.shields.io/badge/LLM-GPT--4o-green)
+![Embeddings](https://img.shields.io/badge/Embeddings-OpenAI-purple)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
-````markdown
-## Architecture Diagram
+An **AI-powered resume analysis system** that compares a resume with a job description and generates:
 
-The system is built as a layered AI decision pipeline:
+- 🎯 semantic match score
+- ❌ missing skills report
+- ✍ revised resume bullets
+- 🚀 actionable improvement plan
+
+> Structured AI reasoning. Human decision remains in control.
+
+---
+
+## Architecture (Mermaid)
+
+You can copy this Mermaid block anywhere:
 
 ```mermaid
 graph TB
 
-%% ================= EXPERIENCE =================
-subgraph E["🧑‍💼 Experience Layer (Single Workspace UI)"]
-UI["🖥️ Resume Analyzer App<br/>
-📤 Upload Resume + JD<br/>
-▶️ Run Analysis<br/>
-📊 View Fit Score<br/>
-📝 Personalized Suggestions<br/>
-⬇️ Download Report"]
+%% EXPERIENCE
+subgraph Experience["🧑‍💼 Experience Layer (User Interface)"]
+UI["Resume Analyzer App<br/>Upload Resume + JD<br/>Run Analysis<br/>View Score + Suggestions"]
 end
 
-%% ================= UNDERSTANDING =================
-subgraph U["🧾 Understanding Layer (Parsing + Structuring)"]
-U1["📄 Resume Parser<br/>Extract skills, roles, bullets"]
-U2["📄 JD Parser<br/>Extract required skills"]
-U3["🧠 Structured Profile Builder<br/>Normalize + clean text"]
+%% UNDERSTANDING
+subgraph Understanding["🧾 Understanding Layer"]
+Parser1["Resume Parser"]
+Parser2["JD Parser"]
+Cleaner["Text Normalization"]
 end
 
-%% ================= INTELLIGENCE =================
-subgraph I["🧠 Intelligence Layer (Matching + Reasoning)"]
-I1["🧬 Embedding Engine<br/>Text → Vector embeddings"]
-I2["📐 Cosine Similarity Engine<br/>Fit score calculation"]
-I3["🤖 LLM Gap Analyzer<br/>Weak areas detection"]
-I4["✨ Suggestion Generator<br/>Resume improvements<br/>Action plan"]
+%% INTELLIGENCE
+subgraph Intelligence["🧠 Intelligence Layer"]
+Embed["Embedding Engine"]
+Similarity["Cosine Similarity"]
+Gap["Gap Analyzer"]
+Suggest["Suggestion Generator"]
 end
 
-%% ================= OUTPUT =================
-subgraph O["📊 Output Layer (Decision Support)"]
-O1["📈 Match Score Dashboard"]
-O2["📋 Missing Skills Report"]
-O3["📝 Revised Resume Bullets"]
-O4["🚀 2-Week Action Plan"]
+%% OUTPUT
+subgraph Output["📊 Output Layer"]
+Score["Match Score"]
+Missing["Missing Skills"]
+Bullets["Rewritten Bullets"]
+Plan["2-Week Action Plan"]
 end
 
-%% ================= DECISION ENGINE =================
-subgraph D["🚀 Decision Engine"]
-LLM["🤖 GPT Reasoning Engine<br/>Structured career advice"]
-end
-
-%% ================= FLOW =================
-UI --> U1
-UI --> U2
-U1 --> U3
-U2 --> U3
-U3 --> I1
-I1 --> I2
-I2 --> I3
-I3 --> I4
-I4 --> O1
-I4 --> O2
-I4 --> O3
-I4 --> O4
-I4 --> LLM --> I4
-
-%% ================= COLORS =================
-classDef exp fill:#dbeafe,stroke:#1e40af,stroke-width:3px,color:#000;
-classDef understand fill:#dcfce7,stroke:#166534,stroke-width:3px,color:#000;
-classDef intel fill:#fef3c7,stroke:#92400e,stroke-width:3px,color:#000;
-classDef output fill:#fce7f3,stroke:#9d174d,stroke-width:3px,color:#000;
-classDef engine fill:#fff7ed,stroke:#c2410c,stroke-width:3px,color:#000;
-
-class UI exp;
-class U1,U2,U3 understand;
-class I1,I2,I3,I4 intel;
-class O1,O2,O3,O4 output;
-class LLM engine;
+UI --> Parser1
+UI --> Parser2
+Parser1 --> Cleaner
+Parser2 --> Cleaner
+Cleaner --> Embed
+Embed --> Similarity
+Similarity --> Gap
+Gap --> Suggest
+Suggest --> Score
+Suggest --> Missing
+Suggest --> Bullets
+Suggest --> Plan
 ```
 
 ---
 
-## Architecture (SVG version)
-
-If Mermaid preview is disabled on some GitHub clients:
-
-<img src="assets/architecture.svg" width="1000"/>
-````
-
----
-
-# ✅ Screenshots block
-
-```markdown
 ## Screenshots
 
 | | |
@@ -98,10 +75,105 @@ If Mermaid preview is disabled on some GitHub clients:
 | ![](assets/screenshot1.png) | ![](assets/screenshot2.png) |
 | ![](assets/screenshot3.png) | ![](assets/screenshot4.png) |
 | ![](assets/screenshot5.png) | ![](assets/screenshot6.png) |
+
+> Replace images inside `/assets/`
+
+---
+
+## What It Does
+
+### ✅ 1) Resume vs JD Parsing
+
+- Upload resume
+- Upload job description
+- Extract structured text
+- Normalize skills & content
+
+### ✅ 2) Semantic Matching
+
+- Convert text → embeddings
+- Cosine similarity scoring
+- Detect missing skills
+
+### ✅ 3) GPT Reasoning
+
+- Gap analysis
+- Resume improvement suggestions
+- Rewritten bullet points
+- Career action plan
+
+---
+
+## Tech Stack
+
+- Python
+- Streamlit UI
+- OpenAI Embeddings
+- GPT-4o Reasoning
+- Cosine Similarity
+- Pandas
+- Prompt Engineering
+
+---
+
+## Quick Start
+
+```bash
+git clone https://github.com/YOUR_REPO/ai-resume-analyzer.git
+cd ai-resume-analyzer
+
+python -m venv venv
+venv\Scripts\activate
+
+pip install -r requirements.txt
+streamlit run app.py
 ```
 
+---
 
+## Configuration
 
-Just tell me what you want next 😄
+Create `.env` file:
 
-Best regards,
+```
+OPENAI_API_KEY=your_key_here
+```
+
+---
+
+## Project Structure
+
+```
+AI-Resume-Analyzer/
+├── assets/
+│   ├── screenshot1.png
+│   ├── screenshot2.png
+│   └── architecture.mmd
+├── src/
+│   ├── resume_scorer.py
+│   ├── resume_suggestions.py
+│   ├── embedding_model.py
+│   └── directory_reader.py
+├── app.py
+├── requirements.txt
+├── README.md
+```
+
+---
+
+## This project demonstrates
+
+✅ AI resume intelligence  
+✅ semantic similarity matching  
+✅ GPT reasoning workflows  
+✅ explainable decision output  
+✅ career guidance automation
+
+This is not just scoring.  
+This is **AI-assisted career coaching**.
+
+---
+
+## License
+
+MIT
