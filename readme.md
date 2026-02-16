@@ -64,7 +64,6 @@ Suggest --> Plan
 
 ## Screenshots
 
-> Make sure filenames inside `/assets` have **no spaces**
 
 <p align="center">
   <img src="./assets/First_Screenshot.png" width="30%">
