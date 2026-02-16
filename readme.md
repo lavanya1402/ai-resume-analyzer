@@ -1,32 +1,3 @@
-```
-assets/
-architecture.mmd
-First_Screenshot.png
-Second_Screenshot.png
-Third_Screenshot.png
-```
-
-But your README is calling:
-
-```
-assets/screenshot1.png
-assets/screenshot2.png
-...
-```
-
-Linux/GitHub is **case-sensitive**.
-
-👉 `First_Screenshot.png` ≠ `screenshot1.png`
-
-That’s why images are blank.
-
----
-
-## ✅ Fixed README (matching YOUR real filenames)
-
-Copy paste this entire block into README:
-
-````md
 # AI Resume Analyzer — Intelligent Resume vs JD Matching (Streamlit + GPT)
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue)
@@ -37,10 +8,10 @@ Copy paste this entire block into README:
 
 An **AI-powered resume analysis system** that compares a resume with a job description and generates:
 
-- 🎯 semantic match score
-- ❌ missing skills report
-- ✍ revised resume bullets
-- 🚀 actionable improvement plan
+- 🎯 semantic match score  
+- ❌ missing skills report  
+- ✍ revised resume bullets  
+- 🚀 actionable improvement plan  
 
 > Structured AI reasoning. Human decision remains in control.
 
@@ -197,11 +168,3 @@ This is **AI-assisted career coaching**.
 ## License
 
 MIT
-````
-
----
-
-
-Just say what you want next 😄
-
-Best regards,
